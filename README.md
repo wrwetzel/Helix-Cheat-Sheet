@@ -82,5 +82,5 @@ make all
 ```
 
 ## Contact
-You can reach me via *Contact* at one of my other sites: [What!](what.wrwetzel.com) until I build a site for this.
+You can reach me via *Contact* at one of my other sites: [What!](https://what.wrwetzel.com) until I build a site for this.
 
