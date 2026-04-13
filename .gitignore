@@ -3,6 +3,8 @@
 .es2
 .ec1
 .ek1
+Test-*.pdf
+README.md.bak
 DevNotes/
 Other-Sheets/
 Reference/

@@ -374,6 +374,10 @@
 //  Begin front matter
 // ---------------------------------------------------------------------------------
 
+//  Not yet:
+//      - Distributed at: \
+//      #link( "https://helix.wrwetzel.com")[https://helix.wrwetzel.com]
+
 #title[ Bill's Helix Cheat Sheet / Command Reference ]
 
 = Introduction
@@ -382,7 +386,6 @@
 - Based on #link( "https://helix-editor.com/" )[Helix version: 25.07.1.]
 - Distributed at: \
   #link("https://github.com/wrwetzel/Helix-Cheat-Sheet")[https://github.com/wrwetzel/Helix-Cheat-Sheet] \
-  #link( "https://helix.wrwetzel.com")[https://helix.wrwetzel.com]
 - \u{00a9} 2026 Bill Wetzel - Licensed under CC BY 4.0 \
   #link( "https://creativecommons.org/licenses/by/4.0/" )[https://creativecommons.org/licenses/by/4.0/]
 ]
