@@ -13,16 +13,22 @@ Download from the *src* directory above.
 ![Reduced dark poster](Images/poster.jpg)
 
 ## Development Trajectory
-Initially I thought this would be a subset of the most common commands from full Helix command set,
-just enough to get started.
-I started with the commands in the Helix *tutor* document but soon realized that was not
-quite enough and so began adding *just a few* from the *keymap* page. And then my OCD *complete set*
-obsession (*collect them all* from childhood cereal boxes) got the better of me and I expanded it further
-to all of the *keymap* and then *textobjects* pages and even a few command-line commands.
+A wise sage once said that the best way to learn a concept is to teach it. I find that preparing
+cheat sheets is a great way to explore and learn a tool. It was in this spirit that I began
+my work on this - just as a learning exercise - and from there is mushroomed to the present form.
 
-The principle difference between this and the Helix *keymap* and *textobjects* pages is the organization,
-which is by function instead of by modes, which are often organized by the initial letter of a command instead
-of the function of the command.
+Initially I thought this would be a subset of the most common commands
+from full Helix command set, just enough to get started.  I started with
+the commands in the Helix *tutor* document but soon realized that was not
+quite enough and so began adding *just a few* from the *keymap* page.  And
+then my OCD *complete set* obsession (*collect them all*, from cereal
+boxes in my childhood) got the better of me and I expanded it further to
+all of the *keymap* and then *textobjects* pages and even a few
+command-line items.
+
+The principle difference between this and the Helix *keymap* and *textobjects* pages is the organization
+This is grouped by function instead of by modes, which are often grouped by the initial letter of a command instead
+of by the function of the command.
 
 ## Why Another?
 I like cheat sheets. Once the basic paradigm is understood they are a great way to learn
@@ -74,7 +80,7 @@ following:
 ```
 typst compile Bills-Helix-Cheat-Sheet.typ
 ```
-The Makefile includes recipies for building just one size for testing:
+The Makefile includes instructions for building just one size for testing:
 ```
 make one
 make poster
@@ -84,7 +90,6 @@ And for building the complete suite:
 ```
 make all
 ```
-
 ## Contact
-You can reach me via *Contact* at one of my other sites: [What!](https://what.wrwetzel.com) until I build a site for this.
+You can reach me via *Contact* at one of my other sites: [What!](https://what.wrwetzel.com) or through github.
 
