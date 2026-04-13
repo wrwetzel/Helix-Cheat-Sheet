@@ -1,7 +1,7 @@
 # Bill's Helix Cheat Sheet / Command Reference
 
 This started out as a simple cheat sheet but mushroomed into a
-comprehensive command reference.  It is available in us-letter and a4
+comprehensive command reference organized by function.  It is available in us-letter and a4
 sizes, in portrait and landscape orientation, and in a dark and light
 theme.  It is also available as a poster in portrait and landscape, light
 and dark, as single large page or split up as multiple us-letter sized
@@ -19,6 +19,10 @@ I started with the commands in the Helix *tutor* document but soon realized that
 quite enough and so began adding *just a few* from the *keymap* page. And then my OCD *complete set*
 obsession (*collect them all* from childhood cereal boxes) got the better of me and I expanded it further
 to all of the *keymap* and then *textobjects* pages and even a few command-line commands.
+
+The principle difference between this and the Helix *keymap* and *textobjects* pages is the organization,
+which is by function instead of by modes, which are often organized by the initial letter of a command instead
+of the function of the command.
 
 ## Why Another?
 I like cheat sheets. Once the basic paradigm is understood they are a great way to learn
