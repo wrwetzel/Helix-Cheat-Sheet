@@ -8,7 +8,7 @@ and dark, and as single large page or split up as multiple us-letter sized
 pages.  Dark is best for reading on screen unless you want to waste a lot
 of printer ink or toner.
 
-Download from the *src* directory.
+Download from the *src* directory above.
 
 ![Reduced dark poster](Images/poster.jpg)
 
