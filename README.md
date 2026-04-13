@@ -15,10 +15,11 @@ Download from the *src* directory above.
 ## Development Trajectory
 A wise sage once said that the best way to learn a concept is to teach it. I find that preparing
 cheat sheets is a great way to explore and learn a tool. It was in this spirit that I began
-my work on this - just as a learning exercise - and from there is mushroomed to the present form.
+my work on this - just as a learning exercise - and from there is mushroomed to the present form,
+which I believe is worthy of sharing.
 
 Initially I thought this would be a subset of the most common commands
-from full Helix command set, just enough to get started.  I started with
+from full Helix command set, just enough for basic use.  I started with
 the commands in the Helix *tutor* document but soon realized that was not
 quite enough and so began adding *just a few* from the *keymap* page.  And
 then my OCD *complete set* obsession (*collect them all*, from cereal
