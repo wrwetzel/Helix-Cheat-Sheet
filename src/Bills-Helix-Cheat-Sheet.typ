@@ -1,20 +1,11 @@
 // ---------------------------------------------------------------------------------
-//  Helix_Cheat-Sheet-WRW.typ - WRW 2-Apr-2026 and before.
+//  Helix_Cheat-Sheet-WRW.typ - WRW began late March, early April, 2026.
 // ---------------------------------------------------------------------------------
 //  Strip trailing space, artifact of the Rand editor:
 //      sed -i 's/[[:space:]]*$//' <file>
 
-//  Fonts explored:
-//      "Fira Code", "RobotoMono Nerd Font", "Courier New", "Blexmono Nerd Font", "Inconsolata Nerd Font",
-//      "JetBrains", "Noto Sans Mono", "Noto Sans", "DejaVu Sans Mono", "Dejavu Sans"
-//      For command: "Zilla Slab" - best, "Bitter" - good, "Roboto Serif" - ok
-
 //  #block(breakable: false)[...] used to prevent splitting enclosed content at page
 //      or column boundaries.
-
-// <a href="https://github.com/yourusername/your-repo">
-//   <img src="https://img.shields.io/badge/GitHub-Repository-blue?logo=github" alt="GitHub">
-// </a>
 
 // ---------------------------------------------------------------------------------
 //  Building:
@@ -26,11 +17,11 @@
 
 // -----------------------------------------------
 //  Todo:
-//      Think about dict structure for storing index so can sort on command and section
+//      Think about dict structure for storing index so can sort on command and section number.
 //          #arr.sorted(key: it => (it.cmd, it.section))
-//      Add 'reflow' to change
+//      Add more examples.
 
-// ---------------------------------------------------------------------------------
+// =================================================================================
 //  Pick up command-line options
 
 #let theme = sys.inputs.at("theme", default: "light")
@@ -57,20 +48,20 @@
 
 // ---------------------------------------------------------------------------------
 //  Color specifications: bg - background, fg - foreground, bx - box background fill
+//  Keep a few commented out for later exploration
 
 #let bg_dark = rgb( "#3b224c" )
 #let fg_dark = rgb( "#ffffff" )
 #let bx_dark = rgb( "#4b325c")
 
 #let bg_light = rgb( "#ffffff" )
-#let bx_light = rgb( "#fff0ff")     // Light purple, I like blue below better.
-#let bx_light = rgb( "#f0f0ff")
-
-#let fg_light = rgb( "#3b224c" )    // Dark purple to align with Helix site theme, too light
-#let fg_light = rgb( "000040" )     // Dark blue
+// #let fg_light = rgb( "#3b224c" )    // Dark purple to align with Helix site theme, too light
+// #let fg_light = rgb( "000040" )     // Dark blue
 #let fg_light = rgb( "000000" )     // Black
+// #let bx_light = rgb( "#fff0ff")     // Light purple, I like blue better.
+#let bx_light = rgb( "#f0f0ff")     // Light blue
 
-#let bg_color           
+#let bg_color
 #let fg_color           
 #let bx_color           
 
@@ -159,6 +150,7 @@
 #let ch_spacec = text(font: ft_command, "\u{2423}c", weight: "bold", size: sz_command )                          
 #let ch_spacew = text(font: ft_command, "\u{2423}w", weight: "bold", size: sz_command )
 #let cd_sep = " - "     // command - definition separator
+#let today = datetime.today()
 
 // ==========================================================================
 //  Function definitions
@@ -177,67 +169,6 @@
     set text(font: ft_comment, size: sz_comment )
     set par( leading: 0.5em )
     body
-}
-
-// ---------------------------------------------------------------------------------
-//  Sets each line as separate paragraph, leading applies when wrap, spacing controls between each Entry()
-//  This is very close but indent length is a little off on some values of 'a'.
-//  Keep this in case I don't like table approach.
-
-#let Old_Entry(a, b, leading: .6em ) = {
-    context {
-        set text(font: ft_command, size: sz_command )
-
-        let a1 = a.replace("<space>", "\u{2423}")       // a is read-only in context
-        let ch_w = measure([x]).width                   // one char width in current font/size
-        let parts = a1.split(" ").map(p => [*#p*])      // make each part of 'a' bold
-        let a_bold = parts.join(h(ch_w))                // spaces replaced with exact ch_w
-        let a2
-        if b != "" {
-            // a2 = a_bold + h(ch_w) + [-] + h(ch_w)
-            a2 = a_bold + " " + sym.dash.em + " "
-        } else {
-            a2 = a_bold
-        }
-
-        // let a2 = [*#a1*#h(ch_w)-#h(ch_w)]               // explicit spacing instead of ~
-        // let a2 = [*#a1*~-~]                             // ~ is non-breaking space
-        // let indent = ch_w * (a1.clusters().len())       // +3 for space-dash-space
-        let indent = calc.min(measure(a2).width, 20pt)
-        set par( leading: leading * .8, spacing: leading, hanging-indent: indent )
-        let b2 = text(font: ft_command_def, size: sz_command_def)[#b]
-
-        [#a2#b2\ ]
-        // ( a_bold, b2 )
-    }
-}
-
-// ---------------------------------------------------------------------------------
-//  Process one or more commands and definition separated by dash in 'lines' argument string.
-
-#let Old_Proc(lines) = {
-    block(fill: bx_color, inset: bx_inset, radius: bx_radius, width: 100%, stroke: bx_stroke)[
-        #for line in lines.split("\n") {
-
-            let line = line.trim()
-            if line == "-" {
-                v(0.8em)
-            } else if line.len() > 0 {
-                let parts = line.split(" - ")
-                if parts.len() >= 2 {
-                    Entry(parts.at(0), parts.slice(1).join(" - "))
-                } else {
-                    Entry(parts.at(0), "")
-                }
-
-                context {
-                    // let cnt = counter(heading).display()
-                    let s = numbering("1.1", ..counter(heading).get())  // string
-                    add_index_item( line + " (" + s  + ")" )
-                }
-            }
-        }
-    ]
 }
 
 // ---------------------------------------------------------------------------------
@@ -342,6 +273,7 @@
 // ---------------------------------------------------------------------------------
 //  Show the index accumulated in my_index.
 //  Remove blank/whitespace-only lines, probably already removed above.
+//  This is set in a second pass using the same Proc() call as in the first pass.
 
 #let show_index() = {
     context {
@@ -382,41 +314,13 @@
 
 = Introduction
 #Comment[
-- Document version: 1.0.0-beta, April-2026
+- Document version: 1.0.0-beta, #today.display( "[day]-[month repr:short]-[year]" )
 - Based on #link( "https://helix-editor.com/" )[Helix version: 25.07.1.]
 - Distributed at: \
   #link("https://github.com/wrwetzel/Helix-Cheat-Sheet")[https://github.com/wrwetzel/Helix-Cheat-Sheet] \
 - \u{00a9} 2026 Bill Wetzel - Licensed under CC BY 4.0 \
   #link( "https://creativecommons.org/licenses/by/4.0/" )[https://creativecommons.org/licenses/by/4.0/]
 ]
-
-// ---------------------------------------------------------------------------------
-
-/*
-    #block(breakable: false)[
-    == Test Section
-    #Comment[
-        As used in Helix documentation.
-    ]
-
-    #Proc("
-        command without def
-        command without def -
-        v - enter select mode
-        V - this is a very long definition that should wrap to the next line
-        3 - select 3
-        w - words
-        Blank line below
-        -
-        d - delete
-        a, b, c - Commands with synonyms
-        a / b / c - Related commands
-        <space>x - test 1
-        <space>X - this is a very long definition that should wrap to the next line
-        Alt-u / Alt-U - move backward / forward in tree history
-    ", no_index: true)
-    ]
-*/
 
 // ---------------------------------------------------------------------------------
 
@@ -431,6 +335,7 @@
 - *alternate buffer* - the previous active buffer
 - *textual line* - text as defined by the newline character
 - *visual line* - what appears on screen after word-wrapping
+- *range* - a selection; one in single-selection, multiple in multi-selection
 ]
 ]
 
@@ -616,21 +521,6 @@ Ctrl-w and #ch_spacew are synonymous.
 ")
 ]
 
-/*
-#block(breakable: false)[
-    ==== View Movement
-    #Comment[
-    Move view without changing selection.
-    ]
-    
-    #Proc( "
-    Ctrl-f - page down
-    Ctrl-b - page up
-    Ctrl-d - half page down
-    Ctrl-u - half page up
-    ")
-*/
-
 #block(breakable: false)[
 ==== View Movement
 #Comment[
@@ -690,7 +580,7 @@ gb - bottom of screen
 ]
 
 #block(breakable: false)[
-=== By Language Server Protocol - Semantics      
+=== By Language Server Protocol            
 #Comment[
 Requires LSP support.
 ]
@@ -735,17 +625,6 @@ Ctrl-u - half page up
 Ctrl-d - half page down
 ")
 ]
-
-/*  /// All but next line supported by TextObject commands
-    #block(breakable: false)[
-    === By Bill's Custom Bindings
-    #Proc( "
-    'w / 'W - next word / WORD
-    'l - next line
-    'p - next paragraph
-    ")
-    ]
-*/
 
 // ---------------------------------------------------------------------------
 
@@ -972,6 +851,9 @@ Ctrl-x - decrement the selected number
 J - join lines in a selection
 Alt-J - join lines inside selection and select the inserted space
 <under> - trim whitespace from selection
+:reflow <width> - wrap selection to <width>, default 80
+:sort - sort ranges in selection
+:format - format file using external formatter / language server
 ")
 ]
 
@@ -1213,19 +1095,57 @@ Alt-n - next signature
 ]
 
 // -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
+// TOC only useful for reading on screen, no good when printed. Exclude for now.
 
 #if not pagesize == "poster" [
     #pagebreak()
     = Command Index
     #show_index()
     
-    // #pagebreak()
-    // = Table of Contents
-    // #text(font: ft_toc, size: sz_toc, fill: fg_color )[
-    //     #outline()
-    // ]
+    //  Simple TOC that uses existing column layout
+    /*
+        #pagebreak()
+        #text(font: ft_toc, size: sz_toc, fill: fg_color )[
+            #outline()
+        ]
+    */
+
+    // -------------------------------------------------------------------
+    /*
+        // Three-column TOC layout, may make sense at top of sheet for screen reading.
+    
+        #pagebreak()
+        #place(
+          top + center,
+          scope: "parent",
+          float: true,
+          clearance: 1em,   // space between TOC and body text below
+    
+          // layout() now sees full page width (minus margins)
+          layout(size => context {
+            let num-cols  = 3
+            let col-gutter = 10pt
+    
+            let col-width = (size.width - col-gutter * (num-cols - 1)) / num-cols
+    
+            let toc-content = [
+                #text(font: ft_toc, size: sz_toc, fill: fg_color )[
+                    #outline()
+                ]
+            ]
+    
+            let min-height = measure(
+              block(width: col-width, toc-content)
+            ).height / num-cols
+    
+            block(
+              width: size.width,
+              height: min-height,
+              columns(num-cols, gutter: col-gutter, toc-content)
+            )
+          })
+        )
+    */
 ]
 
 // -------------------------------------------------------------------

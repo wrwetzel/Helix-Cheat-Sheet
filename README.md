@@ -8,14 +8,18 @@ and dark, as single large page or split up as multiple us-letter sized
 pages.  Dark is best for reading on screen unless you want to waste a lot
 of printer ink or toner.
 
-Download from the *src* directory above.
+The layout dimensions were tweaked to align the landscape poster horizontal split boundaries
+with column gutters. This is not possible for the vertical split boundaries
+and not considered at all for the portrait poster.
+
+Download from the *dist* directory above.
 
 ![Reduced dark poster](Images/poster.jpg)
 
 ## Development Trajectory
 A wise sage once said that the best way to learn a concept is to teach it. I find that preparing
-cheat sheets is a great way to explore and learn a tool. It was in this spirit that I began
-my work on this - just as a learning exercise - and from there is mushroomed to the present form,
+cheat sheets is a great way to explore and learn a new tool. It was in this spirit that I began
+my work on this - just as a learning exercise - and from there it expanded to the present form,
 which I believe is worthy of sharing.
 
 Initially I thought this would be a subset of the most common commands
@@ -23,7 +27,7 @@ from full Helix command set, just enough for basic use.  I started with
 the commands in the Helix *tutor* document but soon realized that was not
 quite enough and so began adding *just a few* from the *keymap* page.  And
 then my OCD *complete set* obsession (*collect them all*, from cereal
-boxes in my childhood) got the better of me and I expanded it further to
+boxes in my childhood) set in and I expanded it further to
 all of the *keymap* and then *textobjects* pages and even a few
 command-line items.
 
@@ -75,13 +79,17 @@ it, the *fish* shell and *make* if you want to run *make* and *Build.fish* to bu
 full suite of sizes, and *Adobe Caslon Pro*, *Roboto Mono*, and *Zilla Slab* fonts.  All
 fonts, font sizes, and page dimensions are specified near the top of
 `Bills-Helix-Cheat-Sheet.typ` should your opinion on appearance differs from mine.  If you
-don't want to muck around with *fish* or *make* you can rebuild with built-in defaults with the
+don't want to muck around with *fish* or *make* you can run typst directly                           
 following:
 
 ```
 typst compile Bills-Helix-Cheat-Sheet.typ
 ```
-The Makefile includes instructions for building just one size for testing:
+From there you can add in options to your preference as shown in
+Build.fish.  
+The Makefile includes instructions for building just one size                    
+for testing:
+
 ```
 make one
 make poster
@@ -93,4 +101,8 @@ make all
 ```
 ## Contact
 You can reach me via *Contact* at one of my other sites: [What!](https://what.wrwetzel.com) or through github.
+
+
+
+
 

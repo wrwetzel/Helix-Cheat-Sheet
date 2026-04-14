@@ -5,7 +5,8 @@
 # ----------------------------------------------------------------------------
 
 set Source Bills-Helix-Cheat-Sheet.typ
-set Obase (path basename -E $Source)
+set Opath ../dist
+set Obase $Opath/(path basename -E $Source)
 set orientations portrait landscape
 set sizes us-letter a4
 set themes light dark
@@ -26,7 +27,7 @@ for theme in $themes
     echo $theme-$size-$orientation
     set opts -m 8.5x11in -p 17x33in
     set Ofile $Obase-$size-$orientation-$theme.pdf
-    set OSplit (path basename -E $Ofile)-split.pdf
+    set OSplit $Opath/(path basename -E $Ofile)-split.pdf
     typst compile --input pagesize=$size --input theme=$theme --input orientation=$orientation $Source $Ofile & \
         wait $last_pid && pdfposter $opts $Ofile $OSplit &
 
@@ -35,7 +36,7 @@ for theme in $themes
     echo $theme-$size-$orientation
     set opts -m 11x8.5in -p 33x17in
     set Ofile $Obase-$size-$orientation-$theme.pdf
-    set OSplit (path basename -E $Ofile)-split.pdf
+    set OSplit $Opath/(path basename -E $Ofile)-split.pdf
     typst compile --input pagesize=$size --input theme=$theme --input orientation=$orientation $Source $Ofile & \
         wait $last_pid && pdfposter $opts $Ofile $OSplit &
 
