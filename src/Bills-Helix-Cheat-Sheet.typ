@@ -402,23 +402,47 @@ xc - change line
 ", no_index: true )
 ]
 
+/* - Regular Expressions caused page overflow, this is less important.
+    #block(breakable: false)[
+    == Modes
+    #Comment[
+    As used in Helix documentation.
+    ]
+    
+    #Proc( "
+    : - command
+    i - insert
+    v - select or extend
+    z - view - change view preserving selection
+    g - goto
+    m - match
+    Ctrl-w - window
+    <space> - space
+    [, ] - unimpaired
+    ", no_index: true )
+    ]
+*/
+
 #block(breakable: false)[
-== Modes
+== Regular Expressions
 #Comment[
-As used in Helix documentation.
+Helix uses Rust's regex. 
+Escape metachars with backslash when searching for literal value.
 ]
 
 #Proc( "
-: - command     
-i - insert
-v - select or extend
-z - view - change view preserving selection
-g - goto
-m - match
-Ctrl-w - window
-<space> - space
-[, ] - unimpaired
-", no_index: true )
+. - any character
+* - zero or more
++ - one or more
+? - zero or one / lazy modifier
+^ - start of line / negation in class
+$ - end of line
+( ) - capture group
+[ ] - character class
+{ } - repetition count
+| - alternation
+\ - escape character itself
+")
 ]
 
 // =================================================================================
