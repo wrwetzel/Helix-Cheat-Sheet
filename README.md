@@ -74,35 +74,74 @@ pretty much complete out of the box.
 * [Rand Editor Manual](https://www.rand.org/pubs/notes/N2239-1.html)
 
 ## Rebuilding
-The source for this is `Bills-Helix-Cheat-Sheet.typ`.  You will need *typst* to compile
-it, the *fish* shell and *make* if you want to run *make* and *Build.fish* to build the
-full suite of sizes, and *Adobe Caslon Pro*, *Roboto Mono*, and *Zilla Slab* fonts.  All
-fonts, font sizes, and page dimensions are specified near the top of
-`Bills-Helix-Cheat-Sheet.typ` should your opinion on appearance differs from mine.  If you
-don't want to muck around with *fish* or *make* you can run typst directly                           
-following:
+The source for this is `Bills-Helix-Cheat-Sheet.typ`. The following is applicable to *Linux*, the
+environment in which it was developed. It will likely be similar for *MacOS* and a bit different for *Windows*.
+
+### Requirements
+You will need *typst* to compile and fonts *Adobe Caslon Pro*, *Roboto Mono*,
+and *Zilla Slab*.  All fonts, font sizes, and page dimensions are
+specified near the top of `Bills-Helix-Cheat-Sheet.typ` where they can be changed should your
+opinion on appearance differs from mine. Additional requirements for building
+with *make* are shown below.
+
+### Run Typst Directly
+Presently, this is hand tuned for *us-letter* and *a4* page sizes only and a fixed poster size.
+The poster size is based on six *us-letter* size pages.
+
+
+|orientation| width | height | columns |
+|---|---|---|---|
+| portrait | 8.5 * 2 | 11 * 3 | 3 |
+| landscape | 11 * 3 | 8.5 * 2 | 6 |
+
+The source includes commented-out experimental code to compute column count from page size for any     
+size supported by *typst*. I may consider this for a future release.
+
+Default options are shown first.
 
 ```
-typst compile Bills-Helix-Cheat-Sheet.typ
+typst compile <options> Bills-Helix-Cheat-Sheet.typ
 ```
-From there you can add in options to your preference as shown in
-Build.fish.  
-The Makefile includes instructions for building just one size                    
-for testing:
 
+```
+<options>:                 
+    --input pagesize=us-letter / a4 / poster / <any supported by typst>
+    --input theme=light / dark
+    --input orientation=portrait / landscape
+    --input show-breaks=true / false            # show page breaks, false for posters
+    --input show-index=true / false             # true: include index, usually false for posters
+    --input show-toc=false / true               # true: include table of contents, usually false
+    --input col-width=12                        # column width in em, used by Build-Poster.py for adaptive builds                  
+    --input font-scale=1.0                      # scale for all fonts, used by Build-Poster.py for adaptive builds                  
+    --input debug=false / true                  # true: include layout information in Introduction
+```
+### Split Directly
+In addition you will need *pdfposter*. Here are a couple of examples, adjust dimensions to your preference.
+```
+pdfposter -m 8.5x11in -p 17x33in Bills-Helix-Cheat-Sheet.pdf Bills-Helix-Cheat-Sheet-split.pdf     # portrait
+pdfposter -m 11x8.5in -p 33x17in Bills-Helix-Cheat-Sheet.pdf Bills-Helix-Cheat-Sheet-split.pdf     # landscape
+```
+
+### Build Using Makefile
+In addition you will need *make*, and *fish*.
+
+Build the complete suite:
+```
+make all
+```
+
+Build one .pdf file for testing:
 ```
 make one
 make poster
 make split
 ```
-And for building the complete suite:
-```
-make all
-```
+
 ## Contact
 You can reach me via *Contact* at one of my other sites: [What!](https://what.wrwetzel.com) or through github.
 
-
-
-
-
+# Release History
+* 1.0.0, 15-Apr-2026 - Initial release, *us-letter*, *a4*, and locally-defined *poster* paper sizes.
+* 1.1.0, 22-Apr-2026 - Added support for all paper sizes recognized by Typst; adaptive build script to fit the
+    full poster on one sheet of any such paper sizes; some refactoring of code; removed examples, will
+    replace with separate *Quick Start* document in the future.

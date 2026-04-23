@@ -1,159 +1,283 @@
 // ---------------------------------------------------------------------------------
-//  Helix_Cheat-Sheet-WRW.typ - WRW began late March, early April, 2026.
+//  Helix_Cheat-Sheet-WRW.typ - WRW began around the end of March, 2026.
 // ---------------------------------------------------------------------------------
-//  Strip trailing space, artifact of the Rand editor:
-//      sed -i 's/[[:space:]]*$//' <file>
 
-//  #block(breakable: false)[...] used to prevent splitting enclosed content at page
-//      or column boundaries.
-
-// ---------------------------------------------------------------------------------
 //  Building:
-//          --input pagesize=a4 / us-letter / poster
-//          --input theme=dark / light
-//          --input orientation=landscape / portrait
+//      typst compile <options> Bills-Helix-Cheat-Sheet.typ <ofile>
 
-//      typst compile Bills-Helix-Cheat-Sheet.typ                 
+//          --input debug=false / true
+//          --input pagesize=us-letter / a4 / poster    Any Typst-supported size
+//          --input theme=light / dark
+//          --input orientation=portrait / landscape
+//          --input show-breaks=true / false            false for posters
+//          --input show-index=true / false             false for posters
+//          --input show-toc=false / true               New option, independent of 'poster'
+//          --input col-width=60                        For adaptive testing, in em of ft_command bold
+//          --input font-scale=1.0                      For adaptive testing
+//          --input fit=false / true                    Also do computed for us-letter, a4, poster
 
-// -----------------------------------------------
+// ---------------------------------------------------------------------------------
 //  Todo:
 //      Think about dict structure for storing index so can sort on command and section number.
-//          #arr.sorted(key: it => (it.cmd, it.section))
-//      Add more examples.
-
-// =================================================================================
-//  Pick up command-line options
-
-#let theme = sys.inputs.at("theme", default: "light")
-#let pagesize = sys.inputs.at("pagesize", default: "us-letter")
-#let orientation = sys.inputs.at( "orientation", default: "portrait")
+//      #arr.sorted(key: it => (it.cmd, it.section))
+//      Maybe migrate to commands in external file with notation for basics/quick-reference.
+//      Why us-letter and ansi-a differ on column count with adaptive build? OK with column size of 60em.
 
 // ---------------------------------------------------------------------------------
-//  Font and size specification for four functions
+/*
+    Notes:
 
-#let sz_heading = 10pt                      // Relative size of headings
+    Strip trailing space, artifact of the Rand editor:
+        sed -i 's/[[:space:]]*$//' <file>
+
+    #block(breakable: false)[...] used to prevent splitting enclosed content at page
+        or column boundaries.
+
+    Example of returning values from function respecting function scope limits.
+
+    #let test_fcn( arg1 ) = {
+        let a = 3 * arg1
+        let b = arg1 / 3
+        let c = arg1 + 3
+        ( a: a, b: b, c: c )    // last expression evaluated is returned
+    }
+
+    #let t = test_fcn( 10 )
+    #text( fill: rgb( "#ffffff" ))[ a: #t.a, b: #t.b, #t.c ]
+
+    Extract values from context but still has to be done in context where use result.
+
+    #context {
+        let L = layout.get()
+        let sz_command = L.font-size
+        let sz_command_def = L.font-size + 1pt
+    }
+
+    Width of M of 10pt font is around 6pt. "M" was measuring quotes, too.
+*/
+
+// =================================================================================
+//  Global values
+// ---------------------------------------------------------------------------------
+
+#let default_column_width_em = 60       // Fixed width of columns, derrived empirically.
+
+// ---------------------------------------------------------------------------------
+//  Pick up command-line options. Options are strings, convert to boolean or float as needed.
+
+#let Debug_Flag =           if sys.inputs.at( "debug", default: "false") == "true" { true } else { false }
+#let theme =                sys.inputs.at("theme", default: "light")
+#let pagesize =             sys.inputs.at("pagesize", default: "us-letter")
+#let orientation =          sys.inputs.at( "orientation", default: "portrait")
+
+#let Fit_Flag =             if sys.inputs.at( "fit", default: "false") == "true" { true } else { false }
+#let do_breaks =            if sys.inputs.at( "show-breaks", default: "true") == "true" { true } else { false }
+#let do_index =             if sys.inputs.at( "show-index", default: "true") == "true" { true } else { false }
+#let do_toc =               if sys.inputs.at( "show-toc", default: "false") == "true" { true } else { false }
+
+#let arg_column_width_em =  float( sys.inputs.at("col-width", default: default_column_width_em ))
+#let arg_font_scale =       float( sys.inputs.at("font-scale", default: "1.0"))
+
+// ---------------------------------------------------------------------------------
+//  Font and size specification for four functions. These suitable for ~3.25" columns
+//  These are scaled by arg_font_scale for page fit.
+
+#let sz_heading = 10pt * arg_font_scale                     // Headings scaled from this size.
 #let ft_heading = "Adobe Caslon Pro"
 
-#let sz_comment = 10pt                      // Comment text below headings
-#let ft_comment = "Adobe Caslon Pro"                         
+#let sz_comment = 10pt * arg_font_scale                     // Comment text below headings
+#let ft_comment = "Adobe Caslon Pro"
 
-#let sz_command =  8pt                      // Command
+#let sz_command =  8pt * arg_font_scale                     // Command
 #let ft_command = "Roboto Mono"
 
-#let sz_command_def =  9pt                  // Definition. 9pt Zilla Slab matches 8pt Roboto Mono
-#let ft_command_def = "Zilla Slab"                       
+#let sz_command_def =  9pt * arg_font_scale                 // Definition. 9pt Zilla Slab matches 8pt Roboto Mono
+#let ft_command_def = "Zilla Slab"
 
-#let sz_toc = 8pt                           // Table of contents
+#let sz_toc = 8pt * arg_font_scale                          // Table of contents
 #let ft_toc = "Adobe Caslon Pro"
 
 // ---------------------------------------------------------------------------------
-//  Color specifications: bg - background, fg - foreground, bx - box background fill
-//  Keep a few commented out for later exploration
-
-#let bg_dark = rgb( "#3b224c" )
-#let fg_dark = rgb( "#ffffff" )
-#let bx_dark = rgb( "#4b325c")
-
-#let bg_light = rgb( "#ffffff" )
-// #let fg_light = rgb( "#3b224c" )    // Dark purple to align with Helix site theme, too light
-// #let fg_light = rgb( "000040" )     // Dark blue
-#let fg_light = rgb( "000000" )     // Black
-// #let bx_light = rgb( "#fff0ff")     // Light purple, I like blue better.
-#let bx_light = rgb( "#f0f0ff")     // Light blue
-
-#let bg_color
-#let fg_color           
-#let bx_color           
-
-#if theme == "light" {
-    bg_color = bg_light
-    fg_color = fg_light
-    bx_color = bx_light
-} else {
-    bg_color = bg_dark
-    fg_color = fg_dark
-    bx_color = bx_dark
-}
-
-// ---------------------------------------------------------------------------------
-//  Page layout and size specifications
-
-#let flipped
-#let column_count
-#let do_pagebreak       
-#let (pw, ph) = ( none, none )
-#let gutter
-#let (mx, my) = ( .6in, .6in )
-
-#if pagesize == "poster" {
-    do_pagebreak = false
-
-    if orientation == "portrait" {
-        (pw, ph) = (8.5in * 2, 11in * 3)         // two sheets wide x three sheets high
-        column_count = 3
-        flipped = false                                       
-        gutter = .25in
-    } else {
-        (pw, ph) = (11in * 3, 8.5in * 2)         // three sheets wide x two sheets high
-        flipped = false
-        column_count = 6
-        gutter = .5in
-        (mx, my) = ( .75in, .75in )
-    }
-
-} else {
-    do_pagebreak = true
-    gutter = .25in
-    if orientation == "portrait" {
-        flipped = false
-        column_count = 2
-    } else {
-        flipped = true
-        column_count = 3
-    }
-    if pagesize == "us-letter" {
-        (pw, ph) = (8.5in, 11in)
-    } else if pagesize == "a4" {
-        (pw, ph) = (210mm, 297mm)
-    }
-}
-
-// ---------------------------------------------------------------------------------
-//  Command box specs
+//  Command box specifications
 
 #let bx_radius = 3pt
 #let bx_inset = 8pt
 #let bx_stroke = .5pt
 
-// --------------------------------------------------------------------------
-//  Global layout
-
-#set columns(gutter: gutter )
-#set heading(numbering: "1.1")
-
-#set page( columns: column_count,
-          margin: (x: mx, y: my ),
-          width: pw,
-          height: ph,
-          flipped: flipped,
-          fill: bg_color,
-        )
-
-#set text(font: ft_heading, size: sz_heading, fill: fg_color )
-#show heading: it => text(fill: fg_color )[#it]
-
-// --------------------------------------------------------------------------
-//  Few more constants
+// -------------------------------------------------------------------------------
 //  Cheating a bit with specific chars defs so I don't have to translate <space> in #Comment
+//  To do so will have to convert all #Comment[] calls to use strings, not possible, comments
+//  include formatting.
 
-#let ch_space = text(font: ft_command, "\u{2423}", weight: "bold", size: sz_command )                            
-#let ch_spacec = text(font: ft_command, "\u{2423}c", weight: "bold", size: sz_command )                          
+#let ch_space = text(font: ft_command, "\u{2423}", weight: "bold", size: sz_command )
+#let ch_spacec = text(font: ft_command, "\u{2423}c", weight: "bold", size: sz_command )
 #let ch_spacew = text(font: ft_command, "\u{2423}w", weight: "bold", size: sz_command )
-#let cd_sep = " - "     // command - definition separator
+#let cd_sep = " - "     // "command - definition" separator for splitting/joining, not for output.
+
 #let today = datetime.today()
 
+// ===============================================================================
+//  Layout / appearance functions
+// -------------------------------------------------------------------------------
+//  Color specifications: bg - background, fg - foreground, bx - box background fill
+//      A few for later exploration:
+//          rgb( "#3b224c" )    Dark purple to align with Helix site theme, too light
+//          rgb( "000040" )     Dark blue
+//          rgb( "#fff0ff")     Light purple, I like light blue better.
+
+#let get_colors() = {
+    if theme == "light" {
+        (bg_color: rgb( "#ffffff" ), fg_color: rgb( "#000000" ), bx_color: rgb( "#f0f0ff") )
+    } else {
+        (bg_color: rgb( "#3b224c" ), fg_color: rgb( "#ffffff" ), bx_color: rgb( "#4b325c") )
+    }
+}
+
+// ---------------------------------------------------------------------------------
+//  Page layout and size specifications
+
+//  WRW 17-Apr-2025 - set page size explicitly via 'mx', 'my' for "poster", via 'paper' for all else.
+//  Poster dimensions set here.
+//  page.width, page.height do not change when 'flipped: true' for named sizes.
+//  Keep explicit dimensions for portrait and landscape the same to be consistent with named sizes
+//  as we later flip them for landscape.
+
+#let get_page_params() = {
+
+    if pagesize == "poster" {               //  17 h x 33 v, Portrait poster
+        if orientation == "portrait" {        
+            ( gutter: .25in,
+              mx: .6in,
+              my: .6in,
+              paper: none,
+              flipped: false,
+              column_count: 3,      // 4 put break in gutter but had an empty column
+              pw: 8.5in * 2,
+              ph: 11in * 3
+            )
+
+        } else {                            // 33 w x 17 h, Landscape poster
+            ( gutter: .75in,                // .75in centers the gutter on the page break
+              mx: .75in,
+              my: .75in,
+              paper: none,
+              column_count: 6,
+              // flipped: false,
+              // pw: 11in*3,
+              // ph: 8.5in * 2
+              flipped: true,
+              pw: 8.5in * 2,                       
+              ph: 11in * 3
+
+           )
+        }
+
+    } else {    // anything else including us-letter or a4
+        let ( flipped, column_count ) = if orientation == "portrait" { ( false, 2 ) } else { ( true, 3 ) }
+        ( gutter: .25in,
+          mx: .6in,
+          my: .6in,
+          paper: pagesize,
+          flipped: flipped,
+          column_count: column_count,
+          pw: none,
+          ph: none
+        )
+    }
+}
+
+//  ----------------------------------------------------------------------------------------------
+//  Assign values conditionally to page_args to use width:/height: or paper:.
+//  This is the only way to have conditional args to #set page(). Putting #set page() in
+//  a conditional block limited scope to the block, not global.
+//  A reminder that the last expression evalulated is the return value for the function.
+
+#let get_pa( pp, colors ) = {
+    if pagesize == "poster" {
+            (
+            columns: pp.column_count,
+            margin: (x: pp.mx, y: pp.my ),
+            width: pp.pw,
+            height: pp.ph,
+            flipped: pp.flipped,
+            fill: colors.bg_color,
+            )
+        } else {
+            (
+            columns: pp.column_count,
+            margin: (x: pp.mx, y: pp.my ),
+            paper: pp.paper,
+            flipped: pp.flipped,
+            fill: colors.bg_color,
+            )
+        }
+}
+
+// -------------------------------------------------
+//  This appears to solve the problem of context, scope, and getting values
+//  out of context with state().
+//  source just for debugging messages in the cheat sheet
+//  Must be called inside a context block, reads page intrinsics.
+//  Returns dict: (cols, gutter, margin, source ).      
+
+//  /// RESUME: Need to include gutter in 'usable' computation here?
+
+#let calc-layout( col-width: none, margin: none ) = {
+
+    let logical_page_width = if orientation == "portrait" { page.width } else { page.height }
+    let usable    = logical_page_width - margin * 2     // WRW 22-Apr-2026
+    let col_cnt   = calc.max(1, calc.floor(usable / col-width))
+    let gutter    = calc.max( 0.25in, col-width * 0.1)
+
+    (cols: col_cnt, gutter: gutter, margin: margin, source: "Computed" )
+}
+
 // ==========================================================================
-//  Function definitions
+//  *** Global layout. ***
+
+//  I tried moving the "#show: rest context{...}" below into a function but stumbled 
+//      on scope and context issues. Keep it in global scope.
+
+//  Hand-tuned parameters for us-letter, a4, and 'poster'. Computed for all other sizes by calc-layout()
+//  Fit_Flag set in Build-Adaptive.py to force computed for all including us-letter, a4, and poster.
+
+// --------------------------------------------------------------------------
+//  Can't include "..pa" in "set page( columns: L.cols )" below because 'columns:' appears in both.
+//  set page() overrides columns with computed value for adaptive use.
+
+#let colors = get_colors()
+#let pp = get_page_params()
+#let pa = get_pa( pp, colors )
+#set page( ..pa )       
+
+#let layout = state("layout", (cols: 0, gutter: 0pt, font-size: 10pt))  //  Declare state with a default
+
+#show: rest => context {
+    let column_width_em = measure( text( font: ft_command, size: sz_command, weight: "bold" )[M]).width * arg_column_width_em
+
+    //  Keep hand-tuned dimensions for common sizes for page fit, compute all the rest.
+
+    let L = if not Fit_Flag and (pagesize == "us-letter" or pagesize == "a4" or pagesize == "poster") {
+        ( cols: pp.column_count, gutter: pp.gutter, margin: pp.mx, source: "Specified" )
+
+    } else {
+        calc-layout( col-width: column_width_em, margin: pp.mx )        // Computed
+    }
+
+    layout.update(L)                        // Save it in state
+
+    set page( columns: L.cols )             // Override columns with value computed in context for adaptive.
+    set columns( gutter: L.gutter )
+    rest
+}
+
+// Default foreground text color, font, size for whole document including title and headings.
+
+#set text( fill: colors.fg_color, font: ft_heading, size: sz_heading )      // heading scale from this
+#set heading(numbering: "1.1")
+
+// ==========================================================================
+//  Function definitions for setting content
 // --------------------------------------------------------------------------
 //  Data store for Command Index
 
@@ -164,27 +288,37 @@
 
 // ---------------------------------------------------------------------------------
 //  Content under heading, above commands and definitions
+//  WRW 20-Apr-2026 - Tried to replace "<space>" here but failed. Need to convert
+//      calls to Comment to use strings, not content, if want to do that, but then lose formatting.
+//      Ok to live with ch_space, etc.
 
 #let Comment( body ) = {
-    set text(font: ft_comment, size: sz_comment )
-    set par( leading: 0.5em )
-    body
+    context {
+        set text(font: ft_comment, size: sz_comment )
+        set par( leading: 0.5em )
+        body
+    }
 }
 
 // ---------------------------------------------------------------------------------
 //  Helper for Proc(). Will only have section number (1.2.3) on second pass when setting index.
 
 #let proc_def( def ) = {
-    set par(leading: 0.4em)     // space between lines, just like cold-type leading               
+    set par(leading: 0.4em)     // space between lines, just like cold-type leading
 
     let m = def.match(regex("^(.*?)(\(\d+(?:\.\d+)*\))$"))
-    if m != none {                  // Match on second pass
+    if m != none {                  // Match on index pass (second pass)
         let before = m.captures.at(0)
         let number = m.captures.at(1)
-        text(font: ft_command_def, size: sz_command_def )[#before#text(weight: "bold")[#number]]
+
+        context {
+            text(font: ft_command_def, size: sz_command_def )[#before#text(weight: "bold")[#number]]
+        }
 
     } else {                        // No match because no (1.2.3) on first pass, just set argument in call
-        text(font: ft_command_def, size: sz_command_def )[#def]
+        context {
+            text(font: ft_command_def, size: sz_command_def )[#def]
+        }
     }
 }
 
@@ -195,79 +329,110 @@
 //  Arguments:
 //      lines - string containing newline-separated "cmd - definition" pairs.
 //      no_index: - Don't add 'lines' to index, used for some front matter.
-//      cmd_width: - Set width for commands column of table explicitly. For a few cases of wide commands.
 
-#let Proc( lines, no_index: false, cmd_width: 25% ) = {        
-    let cells = ()
+#let Proc( lines, no_index: false, cmd_width: 0 ) = {
+    context {
+        let L = layout.get()
+        let max_cmd_width = 0em
 
-    // Don't know where none lines came from during development. OK now, no need for check.
-    // if lines != none {               
+        let cells = ()
 
-        for line in lines.split("\n") {
-            let line = line.trim()
+        //  Don't know where 'none' lines came from during development. OK now, no need for check.
+        //  if lines != none {
 
-            // ----------------------------------
-            // Dash in input to show blank line to separate groups of commands within one table.
+            //  Build array of cells to set on completion of loop.
 
-            if line == "-" {            
-                cells = cells + (table.cell(colspan: 3)[ ], )
-            }     
-
-            // ----------------------------------
-            //  Something on line
-
-            else if line.len() > 0 {
-                let parts = line.split( cd_sep )
-                let cmd = parts.at(0).replace("<space>", "\u{2423}").replace( "<comma>", "," )  // substitutions are for display, not building index
+            for line in lines.split("\n") {
+                let line = line.trim()
 
                 // ----------------------------------
-                // command and definition
+                // Dash in input to show blank line to separate groups of commands within one table.
 
-                if parts.len() >= 2 {       
-                    let def = parts.slice(1).join( cd_sep )
-                    cells = cells + (
-                        text(font: ft_command, size: sz_command, weight: "bold" )[#cmd],
-                        text(font: ft_command, size: sz_command )[#sym.dash.en],       // set the output separator
-                        proc_def( def )
-                    )
+                if line == "-" {
+                    cells = cells + (table.cell(colspan: 3 )[ ], )
+                }
 
-                    // -------------------------------
-                    // Build index unless arg indicating not to
+                // ----------------------------------
+                //  Something on line
 
-                    if not no_index {
-                        context {
+                else if line.len() > 0 {
+                    let parts = line.split( cd_sep )
+                    let cmd = parts.at(0).replace("<space>", "\u{2423}").replace( "<comma>", "," )  // substitutions are for display, not building index
+
+                    let t = measure( text( font: ft_command, size: sz_command, weight: "bold" )[#cmd]).width
+                    t += measure( text(font: ft_command, size: sz_command )[#sym.dash.en]).width
+                    max_cmd_width = calc.max( max_cmd_width, t )
+
+                    // ----------------------------------
+                    // Command and Definition
+
+                    if parts.len() >= 2 {
+                            let def = parts.slice(1).join( cd_sep )
+                            cells = cells + (
+                                text(font: ft_command, size: sz_command, weight: "bold" )[#cmd],
+                                text(font: ft_command, size: sz_command )[#sym.dash.en],       // set the output separator
+                                proc_def( def )
+                            )
+
+                        // -------------------------------
+                        // Build index unless arg indicating not to
+
+                        if not no_index {
                             let s = numbering("1.1", ..counter(heading).get())  // string
                             add_index_item( line + " (" + s + ")" )
                         }
+
+                    // ----------------------------------
+                    // Just Command, no Definition
+
+                    } else {
+                        cells = cells + (
+                            table.cell(colspan: 3, align: left )[#text(font: ft_command, size: sz_command, weight: "bold" )[#cmd]],
+                        )
                     }
-
-                // ----------------------------------
-                // Just command, no definition
-
-                } else {        
-                    cells = cells + (
-                        table.cell(colspan: 3, align: left)[#text(font: ft_command, size: sz_command, weight: "bold" )[#cmd]],
-                    )
                 }
             }
-        }
-    // } else {    // Saw a 'none' lines during development, show a message to see where.
-    //     cells = cells + [none line here "foobar"]
-    // }
 
-    // ------------------------------------------
-    //  Show command cells accumulated above
+        // } else {    // Saw a 'none' lines during development, show a message to see where.
+        //     cells = cells + [none line here "foobar"]
+        // }
 
-    block(fill: bx_color, inset: bx_inset, radius: bx_radius, width: 100%, stroke: bx_stroke)[
-        #table(
-            columns: ( cmd_width, auto, 1fr),
-            stroke: none,
-            inset: (x: .2em, y: .2em),
-            align: (right, center, left),
-            column-gutter: 0pt,
-            ..cells
-        )
-    ]
+        // ------------------------------------------
+        //  Show cells containing Command / Definition accumulated above.
+
+        //  Limit cmd to no more than 50% of column, no less than 20%. 50% was greatest needed
+        //      when manually adjusting.
+        //  WRW 22-Apr-2025 - A nasty bug, I was not using correct dimensions for flipped (landscape) pages.
+        //      page.width and page.height are fixed, do not change when page flipped for landscape. Ouch!
+        //      Nor dividing by column count. All good now.
+
+        let column_width_em = measure( text( font: ft_command, size: sz_command, weight: "bold" )[M]).width * arg_column_width_em
+        let logical_page_width = if orientation == "portrait" { page.width } else { page.height }
+        let computed_col_width = ( logical_page_width - ( (L.cols - 1) * L.gutter + L.margin * 2) ) / L.cols
+
+        max_cmd_width = calc.min( max_cmd_width, computed_col_width * .5 )     // Upper limit of 50%
+        max_cmd_width = calc.max( max_cmd_width, computed_col_width * .2 )     // Lower limit of 20%
+
+        //  NOTE: inset: (x: -2em ) required to compensate for some offset in the table left padding
+        //      which I bumped up against when setting an absurdly small size of the entire cheat-sheet
+        //      on us-letter just for testing. No good to keep - it also shifted the other columns
+
+        //      Inter-column gutter in table established by "#sym.dash.en", no further needed.
+
+        max_cmd_width = if cmd_width > 0 { computed_col_width * cmd_width } else { max_cmd_width }
+
+        block(fill: colors.bx_color, inset: bx_inset, radius: bx_radius, width: 100%, stroke: bx_stroke)[
+            #table(
+                columns: ( max_cmd_width, auto, 1fr ),      // cmd, gutter, def
+                stroke: none,
+                inset: (x: .2em, y: .2em),                  // surrounding each line in table
+                align: (right, center, left),
+                row-gutter: 0pt,
+                ..cells
+            )
+        ]  // End of block()
+
+    } // End of context
 }
 
 // ---------------------------------------------------------------------------------
@@ -282,7 +447,7 @@
 
         for line in index {
             let parts = line.split( cd_sep )
-            let cmd = parts.at(0).replace("<space>", "\u{2423}")                          
+            let cmd = parts.at(0).replace("<space>", "\u{2423}")
             let def = parts.slice(1).join( cd_sep )
 
             let synonyms = cmd.split( "," )            // Show each synonym as separate index item
@@ -293,34 +458,73 @@
         }
 
         //  Call Proc() again to set the index, this time with no_index set.
-        //  Substitutions with replace() are only for sorting
+        //  Substitutions here with replace() are only for sorting, not setting.
 
         Proc( lines.sorted( key: e => e.replace( "\u{2423}", " " ).
                                         replace( "<space>", " " ).
                                         replace( "<comma>", "," )
-                          ).join( "\n" ), no_index: true )              // Sort after add synonyms
+                          ).join( "\n" ), no_index: true, cmd_width: .33 )       // Sort after add synonyms
     }
 }
 
 // =================================================================================
 //  Begin front matter
 // ---------------------------------------------------------------------------------
-
-//  Not yet:
-//      - Distributed at: \
-//      #link( "https://helix.wrwetzel.com")[https://helix.wrwetzel.com]
+//  - Distributed at: \
+//  #link( "https://helix.wrwetzel.com")[https://helix.wrwetzel.com]
+//      Not yet at my site, maybe never, as just Github appears fine.
 
 #title[ Bill's Helix Cheat Sheet / Command Reference ]
 
+#block(breakable: false)[
 = Introduction
 #Comment[
-- Document version: 1.0.0-beta, #today.display( "[day]-[month repr:short]-[year]" )
-- Based on #link( "https://helix-editor.com/" )[Helix version: 25.07.1.]
+- Document version: 1.1.0-beta, #today.display( "[day]-[month repr:short]-[year]" )
+- Based on #link( "https://helix-editor.com/" )[Helix version: 25.07.1]
+- Built with #link( "https://typst.app/" )[Typst version: #sys.version]
 - Distributed at: \
-  #link("https://github.com/wrwetzel/Helix-Cheat-Sheet")[https://github.com/wrwetzel/Helix-Cheat-Sheet] \
+  #link("https://github.com/wrwetzel/Helix-Cheat-Sheet")[https://github.com/wrwetzel/Helix-Cheat-Sheet]
 - \u{00a9} 2026 Bill Wetzel - Licensed under CC BY 4.0 \
   #link( "https://creativecommons.org/licenses/by/4.0/" )[https://creativecommons.org/licenses/by/4.0/]
-]
+
+//  For debugging only, causes overflow on "poster" size, resolved, keep for future work.
+
+#if Debug_Flag {
+    box( context {
+      let L = layout.get()
+      let column_width_em = measure( text( font: ft_command, size: sz_command, weight: "bold" )[M]).width * arg_column_width_em
+      set text( fill: colors.fg_color )
+      [
+    -   *Page*
+        Reported Width: _ #calc.round( page.width.inches(), digits: 2)in, _
+        Reported Height: _ #calc.round( page.height.inches(), digits: 2)in, _
+
+    -   *Options:*
+        Theme: _#theme,_
+        Pagesize: _#pagesize,_
+        Orientation: _#orientation,_
+        Breaks: _#repr(do_breaks),_
+        Index: _#repr(do_toc),_
+        Arg_column_width: #arg_column_width_em em,
+    -   *Fonts:*
+        Font_scale: _#calc.round( arg_font_scale, digits: 3), _
+        Heading: _#repr( sz_heading ),_
+        Comment: _#repr(sz_comment),_
+        Cmd: _#repr(sz_command),_
+        Def: _#repr(sz_command_def),_
+        Toc: _#repr(sz_toc) _
+
+    -   *Layout:*
+        Columns: _#L.cols (#L.source), _
+        Column_width: _#calc.round( column_width_em.inches(), digits: 2)in _
+        Gutter: _#calc.round( L.gutter.inches(), digits: 2)in (#L.source), _
+    ] // END text()
+    
+    }   // END context {}
+    )   // END #box()
+} // END if Debug_Flag
+]   // end #Comment[]
+]   // end #block()
 
 // ---------------------------------------------------------------------------------
 
@@ -350,12 +554,34 @@
 - Some Alt and Ctrl characters may conflict with terminal capture and require terminal configuration change.
 - #ch_spacec is space followed by the character c.
 - Metavars `<regex>`, `<file>` and `<ch>` represent user input. The angle-brackets are not part of the input.
-- #ch_space, `<minus>`, and `<under>` used for clarity. 
+- #ch_space, `<minus>`, and `<under>` used for clarity.
   `<enter>`, `<del>`, `<bksp>`, etc. used for non-printing control characters.
 - Commands are separated from definitions by a dash. Synonyms are separated by commas.
   Related commands are separated by slashes.
   The separators are never part of the command though commands may include a dash, comma, or slash.
 ]
+]
+
+#block(breakable: false)[
+== Regular Expressions
+#Comment[
+Helix uses Rust's regex.
+Escape following metachars with \<backslash\> when searching for literal value.
+]
+
+#Proc( "
+. - any character
+* - zero or more
++ - one or more
+? - zero or one / lazy match
+^ - start of line / negation in class
+$ - end of line
+( ) - capture group
+[ ] - character class
+{ } - repetition count
+| - alternation
+\ - escape character itself
+", no_index: true )
 ]
 
 #block(breakable: false)[
@@ -365,11 +591,12 @@
 - *helix*
 - *helix* \<file\>
 - *helix* \<file1\> \<file2\> ... \<filen\>
+- *helix* \<directory\>
 - *helix* --help
 - *hx* in some distributions or by alias
-]
-]
-]
+] // END text()
+] // END Comment
+] // END block()
 
 // --------------------------------------------------------------------------------
 
@@ -383,32 +610,45 @@ _mode_ and _count_ are optional.
 [mode][count][select][command]
 ", no_index: true )
 
-=== Example
 #Proc( "
-v3wd
-v - enter select mode
-3 - select 3
-w - words
-d - delete
-", no_index: true )
-
-/// More samples
-
-=== Samples
-#Proc( "
-wd - delete word
-xc - change line
-%y - yank entire file
+v3wd - enter select mode, select 3 words, delete
 ", no_index: true )
 ]
 
-/* - Regular Expressions caused page overflow, this is less important.
+/*  WRW 21-Apr-2026 - Omit - I don't like this, redundant with other content.
+    Not really examples, just selected commands.
+    Make a separate document with a subset of the commands as quick reference.
+
+        //  Add multi-cursor example
+        #block(breakable: false)[
+        == Examples
+        #Proc( "
+        /<regex> / * - search for <regex> / selection
+        %s<regex> - search entire file for <regex>, then...
+        c<new><esc> - ... change to <new>
+        wd / xd - delete word / line
+        wc / xc - change word / line
+        wy / xy / %y - yank word / line / entire file
+        \"ay / \"ap - yank word to reg a / paste reg a
+        p / P - paste yank after / before cursor
+        mi(y / mi(c - yank / change contents inside parens
+        ms( / md( - add / delete parens around selection / under selection
+        <space>c / <space>C - toggle comment on line under selection / block comment on selection
+        i<enter><esc> / J - split line at cursor / join to next
+        C / Alt-C - add selection below / above for multi-edit
+        Alt-s - split selection on lines for multi-edit
+        ", no_index: true )
+        ]
+*/
+
+/* - Regular Expressions caused page overflow, Modes are less important, omit Modes.
+
     #block(breakable: false)[
     == Modes
     #Comment[
     As used in Helix documentation.
     ]
-    
+
     #Proc( "
     : - command
     i - insert
@@ -423,37 +663,15 @@ xc - change line
     ]
 */
 
-#block(breakable: false)[
-== Regular Expressions
-#Comment[
-Helix uses Rust's regex. 
-Escape metachars with backslash when searching for literal value.
-]
-
-#Proc( "
-. - any character
-* - zero or more
-+ - one or more
-? - zero or one / lazy modifier
-^ - start of line / negation in class
-$ - end of line
-( ) - capture group
-[ ] - character class
-{ } - repetition count
-| - alternation
-\ - escape character itself
-")
-]
-
 // =================================================================================
 //  Begin commands
 // ---------------------------------------------------------------------------------
 
-#if do_pagebreak {
-    pagebreak()
-}
+// #if do_breaks {
+//     pagebreak()
+// }
 
-= Primary Commands            
+= Primary Commands
 #block(breakable: false)[
 == Essentials
 #Proc( "
@@ -494,7 +712,9 @@ gf - open/create file(s) under selection, open url under selection.
 <space>F - open file picker at current working directory
 <space>g - open changed file picker
 ")
+]
 
+#block(breakable: false)[
 ==== File Picker
 #Comment[
 All pickers, here and elsewhere, are _fuzzy_ - they tolerate gaps in the input, ranking closer matches higher.
@@ -514,9 +734,9 @@ Buffers named by file they contain.
 ]
 #Proc( "
 :n - create new scratch buffer
-:bc - close current buffer             
-:bca - close all buffers             
-:bco - close all but current buffer             
+:bc - close current buffer
+:bca - close all buffers
+:bco - close all but current buffer
 :bn - next buffer
 <space>b - open buffer picker
 -
@@ -553,7 +773,7 @@ which is a view-only navigation mode appropriate for browsing a file without edi
 ]
 
 #Proc( "
-Z - enter sticky mode, exit with Esc              
+Z - enter sticky mode, exit with Esc
 -
 zz, zc - align to center
 zt - align to top
@@ -600,11 +820,11 @@ gs - first non-white-space char
 gt - top of screen
 gc - middle of screen
 gb - bottom of screen
-", cmd_width: 30% )
+")
 ]
 
 #block(breakable: false)[
-=== By Language Server Protocol            
+=== By Language Server Protocol
 #Comment[
 Requires LSP support.
 ]
@@ -622,7 +842,7 @@ gi - go to implementation
 ]
 
 #block(breakable: false)[
-=== By Treesitter - Syntax     
+=== By Treesitter - Syntax
 #Comment[
 Requires Treesitter support.
 ]
@@ -635,8 +855,8 @@ Requires Treesitter support.
 ]g, [g - to next, prior change
 ]G, [G - to last, first change
 -
-Alt-e - move to end of parent node in syntax tree     
-Alt-b - move to start of parent node in syntax tree     
+Alt-e - move to end of parent node in syntax tree
+Alt-b - move to start of parent node in syntax tree
 ")
 ]
 
@@ -686,7 +906,7 @@ a - argument/parameter
 c - comment
 T - test
 g - change git hunk
-", cmd_width: 35%)
+")
 ]
 
 #block(breakable: false)[
@@ -709,12 +929,12 @@ Alt-x - shrink to line bounds
 Requires Treesitter support.
 ]
 #Proc( "
-Alt-o - expand selection to parent syntax node     
-Alt-i - shrink syntax tree object selection     
-Alt-p - select previous sibling node in syntax tree     
-Alt-n - select next sibling node in syntax tree     
-Alt-a - select all sibling nodes in syntax tree     
-Alt-I - select all children nodes in syntax tree     
+Alt-o - expand selection to parent syntax node
+Alt-i - shrink syntax tree object selection
+Alt-p - select previous sibling node in syntax tree
+Alt-n - select next sibling node in syntax tree
+Alt-a - select all sibling nodes in syntax tree
+Alt-I - select all children nodes in syntax tree
 ")
 ]
 
@@ -728,7 +948,7 @@ _Upper case:_ backward
 f<ch>, F<ch> - to <ch> inclusive (find)
 t<ch>, T<ch> - to <ch> exclusive (till)
 Alt-.  - repeat last find / till
-", cmd_width: 30%)
+")
 ]
 
 
@@ -763,7 +983,7 @@ Create multiple selections from selection.
 s<regex> - matches become selections
 S - split on match
 Alt-s - split on newlines
-C, Alt-C - add selection below, above
+C / Alt-C - add selection below / above
 ")
 ]
 
@@ -952,7 +1172,7 @@ ma<ch> - match around delim <ch>
 ms<ch> - add delim <ch> around selection
 md<ch> - delete delim <ch> around selection
 mr<ch1><ch2> - replace delim <ch1> with <ch2>
-",cmd_width: 35% )
+")
 ]
 
 #block(breakable: false)[
@@ -965,7 +1185,7 @@ All commands pipe each selection to shell command.
 | - replace selection(s) with output
 Alt-| - ignore output
 ! -  insert output before each selection(s)
-Alt-! -  append output after each selection(s)                       
+Alt-! -  append output after each selection(s)
 $ -  keep selection(s) where command returned 0
 ")
 ]
@@ -989,10 +1209,10 @@ $ -  keep selection(s) where command returned 0
 #block(breakable: false)[
 == Editor Configuration
 #Proc( "
-:config-open - open the config file              
+:config-open - open the config file
 :config-open-workspace - open the workspace config file
 :config-reload - reload the config file
-", cmd_width: 50% )
+")
 ]
 
 #block(breakable: false)[
@@ -1003,9 +1223,9 @@ $ -  keep selection(s) where command returned 0
 ")
 ]
 
-#if do_pagebreak {
-    pagebreak()
-}
+// #if do_breaks {
+//     pagebreak()
+// }
 
 = Commands in Specific Contexts
 
@@ -1026,8 +1246,8 @@ Ctrl-h, <bksp>, Shift-<bksp> - delete previous char
 Ctrl-d, <del> - delete next char
 Ctrl-j, <enter> - insert new line
 -
-<Up> <Down> <Left> <Right> <PageUp> <PageDown> <Home> <End> - usual meaning but discouraged
-", cmd_width: 45% )
+<Up>, <Down>, <Left>, <Right>, <PageUp>, <PageDown>, <Home>, <End> - usual meaning but discouraged
+")
 ]
 
 #block(breakable: false)[
@@ -1051,12 +1271,12 @@ Ctrl-u - delete to start of line
 Ctrl-k - delete to end of line
 <bksp>, Ctrl-h - delete previous char
 <del>, Ctrl-d - delete next char
-     
+
 Ctrl-s - insert a word under doc cursor (may be changed to Ctrl-r Ctrl-w later)
 Ctrl-p - select previous history
 Ctrl-n - select next history
 Ctrl-r - insert the content of the register selected by following input char
-", cmd_width: 45%)
+")
 ]
 
 
@@ -1078,13 +1298,13 @@ Ctrl-s - open horizontally
 Ctrl-v - open vertically
 Ctrl-t - toggle preview
 Esc, Ctrl-c - close picker
-", cmd_width: 45%)
+")
 ]
 
 #block(breakable: false)[
 == Popups
 #Comment[
-Displays documentation for item under cursor.                                   
+Displays documentation for item under cursor.
 ]
 
 #Proc( "
@@ -1096,7 +1316,7 @@ Ctrl-d - scroll down
 #block(breakable: false)[
 == Completion Menu
 #Comment[
-Displays documentation for the selected completion item.                                   
+Displays documentation for the selected completion item.
 Any other keypresses result in the completion being accepted.
 ]
 #Proc( "
@@ -1104,13 +1324,13 @@ Shift-Tab, Ctrl-p - previous entry
 Tab, Ctrl-n - next entry
 <enter> - close menu and accept completion
 Ctrl-c - close menu and reject completion
-", cmd_width: 40% )
+")
 ]
 
 #block(breakable: false)[
 == Signature-help Popup
 #Comment[
-Displays the signature of the selected completion item.                                   
+Displays the signature of the selected completion item.
 ]
 #Proc( "
 Alt-p - previous signature
@@ -1119,57 +1339,63 @@ Alt-n - next signature
 ]
 
 // -------------------------------------------------------------------
-// TOC only useful for reading on screen, no good when printed. Exclude for now.
 
-#if not pagesize == "poster" [
-    #pagebreak()
-    = Command Index
-    #show_index()
-    
+#if do_index {
+    if do_breaks {
+        pagebreak()
+    }
+    [= Command Index]
+    show_index()
+}
+
+#if do_toc{
+    if do_breaks {
+        pagebreak()
+    }
     //  Simple TOC that uses existing column layout
-    /*
-        #pagebreak()
-        #text(font: ft_toc, size: sz_toc, fill: fg_color )[
-            #outline()
-        ]
-    */
+    text(font: ft_toc, size: sz_toc, fill: colors.fg_color )[
+        #outline()
+    ]
+}
 
-    // -------------------------------------------------------------------
-    /*
-        // Three-column TOC layout, may make sense at top of sheet for screen reading.
-    
-        #pagebreak()
-        #place(
-          top + center,
-          scope: "parent",
-          float: true,
-          clearance: 1em,   // space between TOC and body text below
-    
-          // layout() now sees full page width (minus margins)
-          layout(size => context {
+// -------------------------------------------------------------------
+/*  
+    //  Three-column TOC layout, may make sense at top of sheet for reading on screen.
+    //  Keep for later exploration.
+
+    #pagebreak()
+    #place(
+      top + center,
+      scope: "parent",
+      float: true,
+      clearance: 1em,   // space between TOC and body text below
+
+      // layout() now sees full page width (minus margins)
+
+      std.layout(size => context {
             let num-cols  = 3
             let col-gutter = 10pt
-    
+
             let col-width = (size.width - col-gutter * (num-cols - 1)) / num-cols
-    
+
             let toc-content = [
-                #text(font: ft_toc, size: sz_toc, fill: fg_color )[
+                #text(font: ft_toc, size: sz_toc, fill: colors.fg_color )[
                     #outline()
                 ]
             ]
-    
+
             let min-height = measure(
               block(width: col-width, toc-content)
             ).height / num-cols
-    
+
             block(
               width: size.width,
               height: min-height,
               columns(num-cols, gutter: col-gutter, toc-content)
             )
-          })
-        )
-    */
-]
+        })
+    )
+*/
 
 // -------------------------------------------------------------------
+
