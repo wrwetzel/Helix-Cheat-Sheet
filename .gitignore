@@ -5,6 +5,8 @@
 .ek1
 Test-*.pdf
 Test.pdf
+Exp-*.pdf
+Exp.pdf
 README.md.bak
 DevNotes/
 Other-Sheets/

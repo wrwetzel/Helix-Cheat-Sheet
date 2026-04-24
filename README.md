@@ -133,6 +133,7 @@ make all
 Build one .pdf file for testing:
 ```
 make one
+make pocket
 make poster
 make split
 ```
@@ -143,5 +144,7 @@ You can reach me via *Contact* at one of my other sites: [What!](https://what.wr
 # Release History
 * 1.0.0, 15-Apr-2026 - Initial release, *us-letter*, *a4*, and locally-defined *poster* paper sizes.
 * 1.1.0, 22-Apr-2026 - Added support for all paper sizes recognized by Typst; adaptive build script to fit the
-    full poster on one sheet of any such paper sizes; some refactoring of code; removed examples, will
-    replace with separate *Quick Start* document in the future.
+    full document on one sheet or specified number of sheets of any such paper sizes; some refactoring of code; 
+    removed examples in lieu of separate future *Quick Start* document; added support for pocket-sized layout.
+
+texlive-binextra
