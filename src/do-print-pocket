@@ -1,0 +1,17 @@
+#!/usr/bin/fish
+# --------------------------------------------------------------------------------
+#   WRW 24-Apr-2026 - Cups buggered the placement on the page, couldn't
+#       print correctly on my Arch-Linux environment, cups, and HP-4100.
+#       Worked fine on Windows from PDF-XChange Viewer.
+# --------------------------------------------------------------------------------
+
+lp -d HP_LaserJet_4100_Series \
+    -o media=Letter \
+    -o scaling=100 \
+    -o fit-to-page=false \
+    -o sides=two-sided-long-edge \
+    -o HP_LaserJet_4100_Series \
+    -o page-ranges=1 \
+    Pocket-book.pdf
+
+# --------------------------------------------------------------------------------
