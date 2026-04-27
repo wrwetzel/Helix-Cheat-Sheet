@@ -4,15 +4,15 @@ comprehensive command reference organized by function.
 It is distributed in: 
 
 * us-letter and a4 sizes, portrait and landscape, and dark and light themes.
-* 2x3-letter-sized poster, portrait and landscape, dark and light, single large page or print ready multiple us-letter sized pages to tape together.
-* 1/4-letter-sized booklet, light and dark, print ready on us-letter sized pages to cut, stack, and fold.
+* 2x3-letter-sized poster, portrait and landscape, dark and light, single large page or print-ready on multiple us-letter sized pages to tape together.
+* 1/4-letter-sized booklet, light and dark, print-ready on us-letter sized pages to cut, stack, and fold.
 * a1 - a4, ansi-a - ansi-e, poster, us-legal, us-letter, landscape, dark, as samples of one-page auto-fit.
 
 Light is best for printing unless you want to waste a lot of printer ink or toner. I like dark for reading on screen.
 
-The layout dimensions were tweaked to align the non-adaptive landscape poster horizontal split boundaries
+The layout dimensions were tweaked to align the non-auto-fit landscape poster horizontal split boundaries
 with column gutters. This is not possible for the vertical split boundaries
-and the either split boundaries of the portrait poster.
+and the neither split boundaries of the portrait poster.
 
 Download fixed sizes from the *dist* directory; auto-fit sizes from the *dist-auto-fit* directory.
 
@@ -35,14 +35,14 @@ box prizes in my childhood) set in and I expanded it further to
 all of the *keymap* and then *textobjects* pages and even a few
 command-line items.
 
-The "just enough for basic use" need will be addressed in a future *Quick Start* guide.
+The *just enough for basic use* need will be addressed in a future *Quick Start* guide.
 
-The principle difference between this and the Helix *keymap* and *textobjects* pages is the organization
+The principle difference between this and the Helix *keymap* and *textobjects* pages is the organization.
 This is grouped by function instead of by modes, which are often grouped by the initial letter of a command instead
 of by the function of the command.
 
 As the cheat-sheet content stabilized I wanted to support any page size
-without hand tuning.  I was interested in automatically fitting the
+without hand tuning.  I was specifically interested in automatically fitting the
 cheat sheet onto an arbitrary target sheet size and page
 count by iterative adjusting the font size until the target is met.  This led
 to support for any page size recognized by *Typst*.  A small sample of
@@ -52,7 +52,7 @@ I'm not going to providing set copy of all of the page sizes supported by
 Dimensionality*. Instead, users should to run *Typst* directly to set
 with their preferred parameters.
 
-And I became intrigued by the idea of a small, pocket-sized booklet. That led to the development
+And I then became intrigued by the idea of a small, pocket-sized booklet. That led to the development
 of the *booklet* size and software to impose the linear-sequence of pages into a printer spread
 for printing eight pages per sheet, duplexed (front and back).
 
@@ -83,7 +83,7 @@ I have been using the *Rand Editor* since my first exposure with Unix, around 19
 Wollongong Unix running on Interdata / Perkin-Elmer hardware.  Since then I bought a release directly
 from Rand, acquired another from CERN, found another online, and migrated to to each
 new computing environment I encountered.  Every attempt to convert to Vim, Emacs, VSCode,
-etc. was thwarted by muscle memory and a distaste for GUI editors.  It was always just
+etc. was thwarted by muscle memory or a distaste for GUI editors.  It was always just
 easier to stick with Rand rather than try to learn something new.  Moreover, the Rand
 editor has one feature - *quarter-plane editing model* - that, with the possible exception
 of Emacs *picture mode*, no modern editor supports.  That, plus mode-less editing and
@@ -94,6 +94,10 @@ time to learn a new editor. I might have been motivated by one of many limitatio
 Unicode support, line length, IDE features, etc. - not sure at this point. My dear friend, ChatGPT, suggested that
 the easiest migration path from Rand would be Kakoune or Helix. I settled on Helix because it is
 pretty much complete out of the box.
+
+### Mea Culpa
+I must sheepishly admit that I did almost all of the development work on this with the *Rand Editor*. *Helix* is
+great but I couldn't change over quickly enough.
 
 ## Links
 
@@ -107,8 +111,8 @@ pretty much complete out of the box.
 * [Rand Editor Manual](https://www.rand.org/pubs/notes/N2239-1.html)
 
 ## Rebuilding
-The source for this is `Bills-Cheat-Sheet-Utils.typ` and
-`Bills-Helix-Cheat-Sheet.typ`.  The following is applicable to *Linux*,
+The source for this is `Bills-Helix-Cheat-Sheet.typ`, which imports `Bills-Cheat-Sheet-Utils.typ`.
+The following is applicable to *Linux*,
 the environment in which it was developed.  It will likely be similar for
 *MacOS* and a bit different for *Windows*.
 
@@ -123,25 +127,7 @@ with *make* are included below.
 
 ```
 typst compile <options> Bills-Helix-Cheat-Sheet.typ <ofile>
-```
-The pagesize of us-letter, a4, poster, and booklet are treated as special cases and use hand-tuned layout parameters.
-Suppress this with *fit=false* to use computed layout as for all other sizes.
 
-The poster size is based on six *us-letter* size pages.
-
-|orientation| width | height | columns |
-|---|---|---|---|
-| portrait | 8.5 * 2 | 11 * 3 | 3 |
-| landscape | 11 * 3 | 8.5 * 2 | 6 |
-
-If width and height are both specified the values are used as a custom page size, the pagesize option is ignored,
-and mx, my, and col_count options are used.
-
-See *Makefile* for examples of running *typst* and option use.
-
-Default options are shown first in the list below.
-
-```
 <options>:                 
     --input pagesize=us-letter / a4 / poster / booklet / <any supported by typst>
     --input theme=light / dark
@@ -160,6 +146,22 @@ Default options are shown first in the list below.
     --input no-binding=false                    true: suppress alternating margin widths, not applicable to poster, booklet
     --input debug=false / true                  true: include layout information in Introduction
 ```
+The pagesize of us-letter, a4, poster, and booklet are treated as special cases and use hand-tuned layout parameters.
+Suppress this with *fit=false* to use computed layout as for all other sizes.
+
+The poster size is based on six *us-letter* size pages.
+
+|orientation| width | height | columns |
+|---|---|---|---|
+| portrait | 8.5 * 2 | 11 * 3 | 3 |
+| landscape | 11 * 3 | 8.5 * 2 | 6 |
+
+If width and height are both specified the values are used as a custom page size, the pagesize option is ignored,
+and mx, my, and col_count options are used.
+
+See *Makefile* for examples of running *typst* and option use.
+
+The default option is the first following the equal sign.
 
 ### Split Poster Directly
 In addition you will need *pdfposter*. Here are a couple of examples.
@@ -177,17 +179,18 @@ booklet-impose.py Test-booklet.pdf Test-booklet-print.pdf
 
 ### Build using Build-Auto-Fit.py
 This is used in the Makefile for building the sample posters in the dist-auto-fit folder.
-It can be run manually.
+It can be run manually but is not particularly friendly with bogus options.
 
 ```
-Build-Auto-Fit.py --odir <odir> --poster <size> --multi <size> <count> --sample-poster --sample-multi --show-sizes
+Build-Auto-Fit.py <options>
 
---odir <odir> - send results to <odir>, default ../dist-auto-fit
---poster <size> - build one poster of Typst supported pagesize <size>
---multi <size> <count> - build one document of size <size> with <count> pages
---sample-poster - build a sample of several different sizes posters
---sample-multi - build a sample of us-letter size in several different page counts
---show-sizes - show a list of all page sizes supported by Typst
+<options>
+    --odir <odir> - send results to <odir>, default ../dist-auto-fit
+    --poster <size> - build one poster of Typst supported pagesize <size>
+    --multi <size> <count> - build one document of size <size> with <count> pages
+    --sample-poster - build a sample of several different sizes posters
+    --sample-multi - build a sample of us-letter size in several different page counts
+    --show-sizes - show a list of all page sizes supported by Typst
 ```
 
 ### Build Using Makefile
@@ -231,9 +234,9 @@ make dist-auto-fit
 ## Building the Booklet
 
 Print the booklet on 8.5"x11" inch paper, duplexed (print on front and
-back) on long edge, at 100% (don't scale to fit, already includes adequate
+back) on long edge, at 100% (don't scale to fit, it already includes adequate
 margins).  If you don't have a duplex printer you will have to print odd
-pages, put back in printer and print even pages.  Cut in the exact middle
+pages, put them back in printer (with proper orientation and inversion) and print even pages.  Cut in the exact middle
 of the stack parallel to the short edge.  Place the bottom stack of cut
 sheets on top of the top stack, fold, and staple.  I was unsuccessful
 printing on Linux using Cups but got perfect results on Windows from the
