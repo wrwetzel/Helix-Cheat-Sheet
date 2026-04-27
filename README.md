@@ -1,7 +1,6 @@
 # ![Reduced logo](Images/helix-logo-20.jpg) Bill's Helix Cheat Sheet / Command Reference
 This started out as a simple cheat sheet but mushroomed into a
-comprehensive command reference organized by function.  
-It is distributed in: 
+comprehensive command reference organized by function.  It is distributed in:
 
 * us-letter and a4 sizes, portrait and landscape, and dark and light themes.
 * 2x3-letter-sized poster, portrait and landscape, dark and light, single large page or print-ready on multiple us-letter sized pages to tape together.
