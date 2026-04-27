@@ -16,10 +16,12 @@
 //  #link( "https://helix.wrwetzel.com")[https://helix.wrwetzel.com]
 //      Not yet at my site, maybe never, as just Github appears fine.
 
-#title[ Bill's Helix Cheat Sheet / Command Reference ]
+#title[ #box( image("Images/helix-logo.svg", width: .6em) ) #h(.2em) Bill's Helix Cheat Sheet / Command Reference ]
 
 #block(breakable: false)[
 = Introduction
+== Metadata
+
 #Comment[
 - Document version: 1.1.0-beta, #today.display( "[day]-[month repr:short]-[year]" )
 - Based on #link( "https://helix-editor.com/" )[Helix version: 25.07.1]
@@ -73,17 +75,37 @@
 #block(breakable: false)[
 == Definitions
 #Comment[
-- *file* - the actual data on storage device
+- *file* - data on storage device, e.g., hard disk or ssd
 - *buffers* - data from one or more files loaded into memory
 - *view* - one or more visual areas on screen showing one or more buffers
 - *workspace* - the directory from which Helix was launched
-- *under selection* - the entire word containing the cursor, not just the selection
+- *under selection* - the entire word containing the cursor                        
 - *alternate buffer* - the previous active buffer
 - *textual line* - text as defined by the newline character
 - *visual line* - what appears on screen after word-wrapping
 - *range* - a selection; one in single-selection, multiple in multi-selection
 ]
 ]
+
+// ---------------------------------------------------------------------------------
+//  TOC here is only for booklet
+
+#if do_toc and pagesize == "booklet" {
+    if do_breaks {
+        pagebreak()
+    }
+    set page( columns: 2 )
+    //  Simple TOC that uses existing column layout
+    text(font: ft_toc, size: sz_toc, fill: colors.fg_color )[
+        #outline()
+    ]
+
+    if do_breaks {
+        pagebreak()
+    }
+}
+
+// ---------------------------------------------------------------------------------
 
 #block(breakable: false)[
 #show raw: it => text(font: ft_command, weight: "bold", size: sz_command )[#it.text]
@@ -104,58 +126,35 @@
 ]
 ]
 
-#block(breakable: false)[
-== Regular Expressions
-#Comment[
-Helix uses Rust's regex.
-Escape following metachars with \<backslash\> when searching for literal value.
-]
-
-#Proc( "
-. - any character
-* - zero or more
-+ - one or more
-? - zero or one / lazy match
-^ - start of line / negation in class
-$ - end of line
-( ) - capture group
-[ ] - character class
-{ } - repetition count
-| - alternation
-\ - escape character itself
-", no_index: true )
-]
+/*
+    #block(breakable: false)[
+    == Launching
+    #Comment[
+    #text(font: ft_command, size: sz_command )[
+    - *helix*
+    - *helix* \<file\>
+    - *helix* \<file1\> \<file2\> ... \<filen\>
+    - *helix* \<directory\>
+    - *helix* --help
+    - *hx* in some distributions or by alias
+    ] // END text()
+    ] // END Comment
+    ] // END block()
+*/
 
 #block(breakable: false)[
 == Launching
-#Comment[
-#text(font: ft_command, size: sz_command )[
-- *helix*
-- *helix* \<file\>
-- *helix* \<file1\> \<file2\> ... \<filen\>
-- *helix* \<directory\>
-- *helix* --help
-- *hx* in some distributions or by alias
-] // END text()
-] // END Comment
+#Proc( "
+helix
+helix <file>
+helix <file1> <file2> ... <filen>
+helix <directory>
+helix --help
+hx in some distributions or by alias
+")
 ] // END block()
 
 // --------------------------------------------------------------------------------
-
-#block(breakable: false)[
-== Basics
-#Comment[
-Editing paradigm: select first, action second.
-_mode_ and _count_ are optional.
-]
-#Proc( "
-[mode][count][select][command]
-", no_index: true )
-
-#Proc( "
-v3wd - enter select mode, select 3 words, delete
-", no_index: true )
-]
 
 /*  WRW 21-Apr-2026 - Omit - I don't like this, redundant with other content.
     Not really examples, just selected commands.
@@ -214,8 +213,46 @@ v3wd - enter select mode, select 3 words, delete
 // }
 
 = Primary Commands
+
+#block(breakable: false)[
+== Editing Paradigm
+#Comment[
+Selection first, action second.
+_mode_ and _count_ are optional.
+]
+#Proc( "
+[mode][count][select][command]
+-
+v3wd - enter select mode, select 3 words, delete
+", no_index: true )
+] // END #block()
+
+#block(breakable: false)[
+== Regular Expressions
+#Comment[
+Helix uses Rust's regex.
+Escape following metachars with \<backslash\> when searching for literal value.
+]
+
+#Proc( "
+. - any character
+* - zero or more
++ - one or more
+? - zero or one / lazy match
+^ - start of line / negation in class
+$ - end of line
+( ) - capture group
+[ ] - character class
+{ } - repetition count
+| - alternation
+\ - escape character itself
+", no_index: true )
+]
+
+
 #block(breakable: false)[
 == Essentials
+=== Undo / Repeat / Normal Mode
 #Proc( "
 u / U - undo / redo change in linear history
 Alt-u / Alt-U - move backward / forward in tree history
@@ -890,7 +927,7 @@ Alt-n - next signature
     show_index()
 }
 
-#if do_toc{
+#if do_toc and pagesize != "booklet" {
     if do_breaks {
         pagebreak()
     }

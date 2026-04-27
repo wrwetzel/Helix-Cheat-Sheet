@@ -16,7 +16,7 @@ Source = Bills-Helix-Cheat-Sheet.typ
 QSource = Bills-Helix-Quick-Start.typ
 ORoot =  Bills-Helix-Cheat-Sheet
 
-all: tests readme dist dist-adaptive
+all: tests readme dist dist-auto-fit
 
 tests: one quick booklet a4 poster split
 
@@ -25,13 +25,13 @@ exp:
 + booklet-impose.py Exp.pdf Exp-print.pdf
 
 one:
-+ typst compile --input orientation=landscape --input theme=dark $(Source) Test-letter.pdf
++ typst compile --input orientation=landscape --input theme=dark $(Source) --input show-toc=true Test-letter.pdf
 
 quick:
 + typst compile --input orientation=landscape --input theme=dark $(QSource) Test-quick-letter.pdf
 
 booklet:
-+ typst compile --input debug=false --input pagesize=booklet --input show-index=false $(Source) Test-booklet.pdf
++ typst compile --input debug=false --input pagesize=booklet --input show-index=false --input show-toc=true $(Source) Test-booklet.pdf
 + booklet-impose.py Test-booklet.pdf Test-booklet-print.pdf
 
 a4:
@@ -49,8 +49,8 @@ readme:
 dist:
 + Build-Fixed.fish
 
-dist-adaptive:
-+ Build-Adaptive.py --sample-poster
+dist-auto-fit:
++ Build-Auto-Fit.py --sample-poster
 
 # -------------------------------------------------
 
