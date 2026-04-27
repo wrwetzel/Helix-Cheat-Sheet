@@ -57,7 +57,7 @@ for theme in $themes
     set size booklet
     echo $theme-$size-$orientation
     set Ofile {$Obase}_{$size}_{$orientation}_{$theme}.pdf
-    set OPocket $Opath/(path basename -E $Ofile)-booklet.pdf
+    set OPocket $Opath/(path basename -E $Ofile)-print.pdf
     typst compile --input debug=$debug --input show-breaks=false --input show-index=false --input pagesize=$size --input theme=$theme --input orientation=$orientation $Source $Ofile & \
         wait $last_pid && booklet-impose.py $Ofile $OPocket
     end

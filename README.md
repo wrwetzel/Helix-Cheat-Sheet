@@ -46,9 +46,9 @@ cheat sheet onto an arbitrary target sheet size and page
 count by iterative adjusting the font size until the target is met.  This led
 to support for any page size recognized by *Typst*.  A small sample of
 several sizes from the absurdly unreadable small to huge is included.
-I'm not going to providing set copy of all of the page sizes supported by
+I'm not going to provide set copy of all of the page sizes supported by
 *Typst*, in both orientations and themes - think *Curse of
-Dimensionality*. Instead, users should to run *Typst* directly to set
+Dimensionality*. Instead, users should run *Typst* directly to set
 with their preferred parameters.
 
 And I then became intrigued by the idea of a small, pocket-sized booklet. That led to the development
@@ -80,7 +80,7 @@ and in hindsight, in a booklet.
 ## Why Helix - A Personal Story
 I have been using the *Rand Editor* since my first exposure with Unix, around 1980 -
 Wollongong Unix running on Interdata / Perkin-Elmer hardware.  Since then I bought a release directly
-from Rand, acquired another from CERN, found another online, and migrated to to each
+from Rand, acquired another from CERN, found another online, and migrated to each
 new computing environment I encountered.  Every attempt to convert to Vim, Emacs, VSCode,
 etc. was thwarted by muscle memory or a distaste for GUI editors.  It was always just
 easier to stick with Rand rather than try to learn something new.  Moreover, the Rand
