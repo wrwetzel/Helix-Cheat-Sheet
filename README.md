@@ -11,13 +11,19 @@ Light is best for printing unless you want to waste a lot of printer ink or tone
 
 The layout dimensions were tweaked to align the non-auto-fit landscape poster horizontal split boundaries
 with column gutters. This is not possible for the vertical split boundaries
-and the neither split boundaries of the portrait poster.
+and neither split boundaries of the portrait poster.
 
 Download fixed sizes from the *dist* directory; auto-fit sizes from the *dist-auto-fit* directory.
 
-![Reduced dark poster](Images/poster.jpg)
+Additionally, by building with a provided Python program or compiling the
+cheat-sheet source with *Typst*, you can set it in:
 
-The current version is still labeled as *beta* pending reports of errors in the content.
+* Any pagesize supported by *Typst*.
+* An arbitrary size described by command-line options.
+
+I'm keeping this as *beta* for the time being pending reports of errors in the content.
+
+![Reduced dark poster](Images/poster.jpg)
 
 ## Development Trajectory
 A wise sage once said that the best way to learn something is to teach it. I find that preparing
@@ -43,12 +49,12 @@ of by the function of the command.
 As the cheat-sheet content stabilized I wanted to support any page size
 without hand tuning.  I was specifically interested in automatically fitting the
 cheat sheet onto an arbitrary target sheet size and page
-count by iterative adjusting the font size until the target is met.  This led
+count by iteratively adjusting the font size until the target is met.  This led
 to support for any page size recognized by *Typst*.  A small sample of
 several sizes from the absurdly unreadable small to huge is included.
 I'm not going to provide set copy of all of the page sizes supported by
 *Typst*, in both orientations and themes - think *Curse of
-Dimensionality*. Instead, users should run *Typst* directly to set
+Dimensionality*. Instead, users should run *Build-Auto-Fit.py* or *Typst* directly to set
 with their preferred parameters.
 
 And I then became intrigued by the idea of a small, pocket-sized booklet. That led to the development
