@@ -184,7 +184,8 @@ booklet-impose.py Test-booklet.pdf Test-booklet-print.pdf
 
 ### Build using Build-Auto-Fit.py
 This is used in the Makefile for building the sample posters in the dist-auto-fit folder.
-It can be run manually but is not particularly friendly with bogus options.
+Run it manually to fit to any *Typst* supported page size.
+It is not particularly robust or friendly to bogus options.
 
 ```
 Build-Auto-Fit.py <options>
