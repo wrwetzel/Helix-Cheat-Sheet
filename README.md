@@ -13,8 +13,6 @@ The layout dimensions were tweaked to align the non-auto-fit landscape poster ho
 with column gutters. This is not possible for the vertical split boundaries
 and neither split boundaries of the portrait poster.
 
-Download fixed sizes from the *dist* directory; auto-fit sizes from the *dist-auto-fit* directory.
-
 Additionally, by building with a provided Python program or compiling the
 cheat-sheet source with *Typst*, you can set it in:
 
