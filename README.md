@@ -30,7 +30,7 @@ I'm keeping this as *beta* for the time being pending reports of errors in the c
 * [Booklet-light, for print](dist/Bills-Helix-Cheat-Sheet_booklet_portrait_light-print.pdf)
 ### All Common Formats
 * [Distribution](dist)
-### Selected Auto-Fit Formats
+### Sample Auto-Fit Formats
 * [Distribution](dist-auto-fit)
 
 
