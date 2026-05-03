@@ -23,6 +23,17 @@ cheat-sheet source with *Typst*, you can set it in:
 
 I'm keeping this as *beta* for the time being pending reports of errors in the content.
 
+## Download
+### Selected Common Formats
+* [US-Letter-portrait-light](dist/Bills-Helix-Cheat-Sheet_us-letter_portrait_light.pdf)
+* [Poster-landscape-light, for print](dist/Bills-Helix-Cheat-Sheet_poster_landscape_light-split.pdf)
+* [Booklet-light, for print](dist/Bills-Helix-Cheat-Sheet_booklet_portrait_light-print.pdf)
+### All Common Formats
+* [Distribution](dist)
+### Selected Auto-Fit Formats
+* [Distribution](dist-auto-fit)
+
+
 ![Reduced dark poster](Images/poster.jpg)
 
 ## Development Trajectory
